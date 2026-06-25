@@ -956,6 +956,19 @@ export default function Home() {
     }
   };
 
+  // Copy to clipboard
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const handleCopy = async (text: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      addToast("Copied to clipboard", "success");
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (_) {
+      addToast("Failed to copy", "error");
+    }
+  };
+
   // Helper color indicators for Method tags
   const getMethodColorClass = (method: string): string => {
     const m = method.toUpperCase();
@@ -1627,6 +1640,24 @@ export default function Home() {
                     {activeTab.bodyType === "raw" && (
                       <div className={styles.rawEditorContainer}>
                         <div className={styles.rawEditorHeader}>
+                          {activeTab.bodyRaw ? (
+                            <button
+                              className={`${styles.btnCopy} ${copiedField === "reqBody" ? styles.btnCopied : ""}`}
+                              onClick={() => handleCopy(activeTab.bodyRaw, "reqBody")}
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                {copiedField === "reqBody" ? (
+                                  <polyline points="20 6 9 17 4 12"></polyline>
+                                ) : (
+                                  <>
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                  </>
+                                )}
+                              </svg>
+                              {copiedField === "reqBody" ? "Copied" : "Copy"}
+                            </button>
+                          ) : <span />}
                           <select
                             className={styles.envSelect}
                             style={{ margin: 0 }}
@@ -1837,6 +1868,26 @@ export default function Home() {
                     >
                       Headers ({activeTab.response.headers.length})
                     </span>
+
+                    {activeResponseTab === "body" && activeTab.response.body && (
+                      <button
+                        className={`${styles.btnCopy} ${copiedField === "resBody" ? styles.btnCopied : ""}`}
+                        style={{ marginLeft: "auto" }}
+                        onClick={() => handleCopy(getFormattedBody(activeTab.response!.body), "resBody")}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          {copiedField === "resBody" ? (
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          ) : (
+                            <>
+                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </>
+                          )}
+                        </svg>
+                        {copiedField === "resBody" ? "Copied" : "Copy"}
+                      </button>
+                    )}
                   </div>
 
                   <div className={styles.responseBodyView}>

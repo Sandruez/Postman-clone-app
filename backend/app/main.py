@@ -20,7 +20,7 @@ app = FastAPI(
 # Enable CORS for frontend client
 allowed_origins = os.environ.get(
     "CORS_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,https://postman-clone-app.onrender.com"
+    "http://localhost:3000,http://127.0.0.1:3000,https://postman-clone-app-cp.onrender.com"
 ).split(",")
 
 app.add_middleware(

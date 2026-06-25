@@ -1,3 +1,9 @@
+databases:
+  - name: postman-clone-db
+    plan: free
+    databaseName: postman_clone
+    user: postman_user
+
 services:
   # --- Backend: FastAPI Proxy & Persistence ---
   - type: web
@@ -12,6 +18,10 @@ services:
         value: "."
       - key: CORS_ORIGINS
         value: "http://localhost:3000,http://127.0.0.1:3000,https://postman-clone-app-cp.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postman-clone-db
+          property: connectionString
     autoDeploy: true
 
   # --- Frontend: Next.js App ---
